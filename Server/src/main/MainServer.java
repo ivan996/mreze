@@ -3,6 +3,7 @@ package main;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,13 +26,14 @@ public class MainServer {
 	public static ObjectInputStream inClient = null;
 
 	public static void main(String[] args) {
-		
+
 		loadList();
 
 		ServerSocket serverSocet = null;
 		Socket socket = null;
 		try {
 			serverSocet = new ServerSocket(9001);
+			
 			while (true) {
 				System.out.println("Cekanje na konekciju...");
 				socket = serverSocet.accept();
@@ -50,12 +52,12 @@ public class MainServer {
 
 	public static void updateList() {
 		try {
-			upisKey = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("keys.out")));
+			upisKey = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("file/keys.out")));
 			for (String key : MainServer.allFiles) {
 				upisKey.flush();
 				upisKey.writeObject(key);
 			}
-			upisiClient = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("client.out")));
+			upisiClient = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("file/client.out")));
 			for (Clients client : MainServer.allClients) {
 				upisiClient.flush();
 				upisiClient.writeObject(client);
@@ -72,7 +74,7 @@ public class MainServer {
 
 	public static void loadList() {
 		try {
-			inKey = new ObjectInputStream(new BufferedInputStream(new FileInputStream("keys.out")));
+			inKey = new ObjectInputStream(new BufferedInputStream(new FileInputStream("file/keys.out")));
 			try {
 				while (true) {
 					String k = (String) (inKey.readObject());
@@ -80,11 +82,12 @@ public class MainServer {
 				}
 			} catch (EOFException e) {
 				inKey.close();
+				proveriListu();
 			} catch (ClassNotFoundException e) {
 				System.out.println("Nije pronadjena klasa!");
 			}
 
-			inClient = new ObjectInputStream(new BufferedInputStream(new FileInputStream("client.out")));
+			inClient = new ObjectInputStream(new BufferedInputStream(new FileInputStream("file/client.out")));
 			try {
 				while (true) {
 					Clients c = (Clients) (inClient.readObject());
@@ -100,5 +103,24 @@ public class MainServer {
 		} catch (IOException e) {
 			System.out.println("Greska prilikom citanja iz file!");
 		}
+	}
+	private static void proveriListu(){
+		boolean provera=false;
+		File file = new File("fajlovi");
+		String niz[] = file.list();
+		for (String str : allFiles) {
+			for(int i=0;i<niz.length;i++){
+				if((str + ".txt").equals(niz[i])){
+					provera = true;
+					break;
+				}
+			}
+			if(!provera){
+				allFiles.remove(str);
+				
+			}
+		}
+		
+		
 	}
 }

@@ -22,7 +22,7 @@ public class Clients extends Thread implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public String username="";
+	public String username = "";
 	public String pass;
 	public LinkedList<String> upload = new LinkedList<>();
 	public static OutputStream output;
@@ -30,8 +30,6 @@ public class Clients extends Thread implements Serializable {
 	public static PrintStream clientOutput = null;
 	public static Socket socket = null;
 
-	
-	
 	public Clients(Socket socket) {
 		this.socket = socket;
 	}
@@ -75,7 +73,7 @@ public class Clients extends Thread implements Serializable {
 		} catch (NumberFormatException e) {
 			System.out.println("Neispravan unos!");
 		} catch (IOException e) {
-			System.out.println("Klijent " + username +" je nasilno prekinu program");
+			System.out.println("Klijent " + username + " je nasilno prekinu program");
 			try {
 				socket.close();
 			} catch (IOException e1) {
@@ -91,7 +89,7 @@ public class Clients extends Thread implements Serializable {
 			for (Clients client : MainServer.allClients) {
 				if (client.pass.equals(pass) && client.username.equals(username)) {
 					clientOutput.println("\\clientok");
-					this.username=username;
+					this.username = username;
 					izjednaci();
 					return;
 				}
@@ -140,7 +138,7 @@ public class Clients extends Thread implements Serializable {
 
 		try {
 			String txt = clientInput.readLine();
-			PrintWriter fileOut = new PrintWriter(new BufferedWriter(new FileWriter(key + ".txt")));
+			PrintWriter fileOut = new PrintWriter(new BufferedWriter(new FileWriter("fajlovi/" + key + ".txt")));
 			fileOut.println(txt);
 			fileOut.close();
 			MainServer.allFiles.add(key);
@@ -164,19 +162,19 @@ public class Clients extends Thread implements Serializable {
 			}
 			byte[] bufer = new byte[1024];
 			File file = new File(key + ".txt");
-			 if(file.exists()){
-				 RandomAccessFile randomAccessFile = new RandomAccessFile(key + ".txt", "r");
-				 int n;
-				 while(true){
-					 n = randomAccessFile.read(bufer);
-					 if(n==-1){
-						 break;
-					 }
-					 output.write(bufer,0,n);
-				 }
-				 randomAccessFile.close();
-			 }
-			
+			if (file.exists()) {
+				RandomAccessFile randomAccessFile = new RandomAccessFile("fajlovi/" + key + ".txt", "r");
+				int n;
+				while (true) {
+					n = randomAccessFile.read(bufer);
+					if (n == -1) {
+						break;
+					}
+					output.write(bufer, 0, n);
+				}
+				randomAccessFile.close();
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,21 +191,20 @@ public class Clients extends Thread implements Serializable {
 		return stringBuilder.toString();
 	}
 
-	private void izjednaci(){
+	private void izjednaci() {
 		for (Clients client : MainServer.allClients) {
-			if(client.username.equals(username)){
-				this.upload=client.upload;
+			if (client.username.equals(username)) {
+				this.upload = client.upload;
 			}
 		}
 	}
-	private void ubaci(){
-		for (Clients client : MainServer.allClients) {
-			if(client.username.equals(username)){
-				client.upload=this.upload;
-			}
-		}
-	}
-	
 
+	private void ubaci() {
+		for (Clients client : MainServer.allClients) {
+			if (client.username.equals(username)) {
+				client.upload = this.upload;
+			}
+		}
+	}
 
 }
