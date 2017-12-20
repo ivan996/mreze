@@ -82,7 +82,7 @@ public class MainServer {
 				}
 			} catch (EOFException e) {
 				inKey.close();
-				proveriListu();
+				
 			} catch (ClassNotFoundException e) {
 				System.out.println("Nije pronadjena klasa!");
 			}
@@ -95,6 +95,7 @@ public class MainServer {
 				}
 			} catch (EOFException e) {
 				inClient.close();
+				proveriListu();
 			} catch (ClassNotFoundException e) {
 				System.out.println("Nije pronadjena klasa!");
 			}
@@ -108,19 +109,21 @@ public class MainServer {
 		boolean provera=false;
 		File file = new File("fajlovi");
 		String niz[] = file.list();
-		for (String str : allFiles) {
+		for (int j=0;j<allFiles.size();j++) {
+			provera = false;
 			for(int i=0;i<niz.length;i++){
-				if((str + ".txt").equals(niz[i])){
+				if((allFiles.get(j) + ".txt").equals(niz[i])){
 					provera = true;
 					break;
 				}
 			}
 			if(!provera){
-				allFiles.remove(str);
+				allFiles.remove(allFiles.get(j));
+				System.out.println(allFiles.get(j));
 				
 			}
 		}
 		
-		
+		updateList();
 	}
 }
