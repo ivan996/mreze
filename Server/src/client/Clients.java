@@ -161,7 +161,7 @@ public class Clients extends Thread implements Serializable {
 				clientOutput.println("\\keyok");
 			}
 			byte[] bufer = new byte[1024];
-			File file = new File(key + ".txt");
+			File file = new File("fajlovi/" +key + ".txt");
 			if (file.exists()) {
 				RandomAccessFile randomAccessFile = new RandomAccessFile("fajlovi/" + key + ".txt", "r");
 				int n;
@@ -173,11 +173,13 @@ public class Clients extends Thread implements Serializable {
 					output.write(bufer, 0, n);
 				}
 				randomAccessFile.close();
+				
+			}else{
+				System.out.println("greska");
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Greska prilikom skidanja fajla!");
 		}
 	}
 
